@@ -94,17 +94,17 @@
   <div class="title">Hangul Syllable Spinner</div>
   <div class="parts">
     <div class="part-box">
-      <div class="part-label">초성</div>
+      <div class="part-label">Initial</div>
       <div class="part-char" id="cho">？</div>
     </div>
     <div class="operator">+</div>
     <div class="part-box">
-      <div class="part-label">중성</div>
+      <div class="part-label">Vowel</div>
       <div class="part-char" id="jung">？</div>
     </div>
     <div class="operator">+</div>
     <div class="part-box">
-      <div class="part-label">종성</div>
+      <div class="part-label">Final</div>
       <div class="part-char" id="jong">？</div>
     </div>
   </div>
@@ -136,6 +136,35 @@ const syllables = [
   '싸','싹','쌀','쌍','써','썩','쏘','쑤','쓰','씩',
   '짜','짝','찌','쪼',
 ];
+
+const ctx = new (window.AudioContext || window.webkitAudioContext)();
+
+function playClick() {
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.connect(g); g.connect(ctx.destination);
+  o.frequency.value = 800;
+  o.type = 'square';
+  g.gain.setValueAtTime(0.08, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.04);
+  o.start(ctx.currentTime);
+  o.stop(ctx.currentTime + 0.04);
+}
+
+function playChime() {
+  [523, 659, 784].forEach((freq, i) => {
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.frequency.value = freq;
+    o.type = 'sine';
+    const t = ctx.currentTime + i * 0.12;
+    g.gain.setValueAtTime(0.15, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.4);
+    o.start(t);
+    o.stop(t + 0.4);
+  });
+}
 
 const CHO_LIST  = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
 const JUNG_LIST = ['ㅏ','ㅐ','ㅑ','ㅒ','ㅓ','ㅔ','ㅕ','ㅖ','ㅗ','ㅘ','ㅙ','ㅚ','ㅛ','ㅜ','ㅝ','ㅞ','ㅟ','ㅠ','ㅡ','ㅢ','ㅣ'];
@@ -181,6 +210,7 @@ function spin() {
     jungEl.innerText = jung;
     jongEl.innerText = jong;
     choEl.className = jungEl.className = jongEl.className = 'part-char spinning';
+    playClick();
     count++;
 
     if (count >= total) {
@@ -190,6 +220,7 @@ function spin() {
       jungEl.innerText = final.jung;
       jongEl.innerText = final.jong;
       choEl.className = jungEl.className = jongEl.className = 'part-char done';
+      playChime();
       btn.disabled = false;
       spinning = false;
     }
