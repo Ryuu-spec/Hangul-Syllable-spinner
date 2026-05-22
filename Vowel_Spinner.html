@@ -11,11 +11,12 @@
     font-family: 'Noto Sans KR', sans-serif;
     background: #ffffff;
     width: 100%;
-    min-height: 100vh;
+    height: 100vh;
+    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 12px;
   }
   :root {
     --lime: #97C459;
@@ -26,9 +27,9 @@
   .card {
     background: #fff;
     border-radius: 20px;
-    padding: 1.4rem 1.2rem 1.2rem;
+    padding: 1.6rem 1.4rem 1.4rem;
     width: 100%;
-    max-width: 360px;
+    max-width: 480px;
     text-align: center;
   }
   .card.consonant-mode { border: 3px solid var(--lime); }
@@ -44,25 +45,25 @@
   .card.vowel-mode .spin-btn { background: var(--orange); }
   .card.vowel-mode .spin-btn:hover { background: var(--orange-dark); }
   .title {
-    font-size: 16px;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
   }
   .combo-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 0.8rem;
+    gap: 16px;
+    margin-bottom: 1rem;
   }
   .char-box {
-    width: 90px;
-    height: 90px;
-    border-radius: 16px;
+    width: 130px;
+    height: 130px;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 56px;
+    font-size: 84px;
     font-weight: 900;
     background: #f8f8f8;
     border: 2px solid #eee;
@@ -82,27 +83,27 @@
     100% { transform: scale(1); opacity: 1; }
   }
   .operator {
-    font-size: 24px;
+    font-size: 32px;
     color: #ccc;
     font-weight: 700;
   }
   .hint {
-    font-size: 12px;
+    font-size: 13px;
     color: #bbb;
-    margin: 0.6rem 0 1rem;
-    line-height: 1.5;
+    margin: 0.6rem 0 1.2rem;
+    line-height: 1.6;
   }
   .spin-btn {
     color: white;
     border: none;
-    padding: 11px 48px;
-    font-size: 15px;
+    padding: 14px 64px;
+    font-size: 18px;
     font-weight: 700;
     font-family: 'Noto Sans KR', sans-serif;
     border-radius: 50px;
     cursor: pointer;
     transition: background 0.2s, transform 0.15s;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
   }
   .spin-btn:active { transform: scale(0.97); }
   .spin-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
@@ -122,8 +123,6 @@ const CONSONANTS = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ',
 const params    = new URLSearchParams(location.search);
 const fixedChar = params.get('char') || '';
 const type      = params.get('type') || 'vowel';
-// type=vowel    : 자음 칸 밟음 → 자음 고정(연두) + 모음 랜덤(주황)
-// type=consonant: 모음 칸 밟음 → 모음 고정(주황) + 자음 랜덤(연두)
 
 const card    = document.getElementById('card');
 const titleEl = document.getElementById('title');
@@ -182,8 +181,8 @@ function spin() {
   let count = 0;
   const total = 20;
   const interval = setInterval(() => {
-    spinBox.textContent   = rand(pool);
-    spinBox.className = 'char-box spin-char spinning';
+    spinBox.textContent = rand(pool);
+    spinBox.className   = 'char-box spin-char spinning';
     playClick();
     count++;
     if (count >= total) {
